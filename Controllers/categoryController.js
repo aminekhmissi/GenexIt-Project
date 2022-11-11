@@ -35,4 +35,9 @@ deleteCategory = async (req, res) => {
   res.status(200).json({
     msg: 'category deleted'
   })
-} 
+}
+
+
+module.exports = {
+  deleteCategory, addCategory, updateCategory, getCategoryByid, gettAllCategories
+}

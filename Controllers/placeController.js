@@ -2,7 +2,7 @@ const lodge = require('../Models/lodge')
 const Place = require('../Models/place')
 
 addPlace = async (req, res) => {
-  const place = new Place(req.body) 
+  const place = new Place(req.body)
   await lodge.save()
   res.status(200).json({
     data: place, msg: 'place created successfully'
@@ -26,4 +26,7 @@ updatePlace = async (req, res) => {
 }
 deletePlace = async (req, res) => {
   const deletedPlace = await Place.findByIdAndRemove({ _id: req.params.id })
+}
+module.exports = {
+  deletePlace, updatePlace, getPlceById, getAllPlaces, addPlace
 }
