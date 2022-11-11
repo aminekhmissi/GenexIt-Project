@@ -28,3 +28,7 @@ updateFacture = async (req, res) => {
 deleteFacture = async (req, res) => {
   const deletedFacture = await Facture.findByIdAndRemove({ _id: req.params.id })
 }
+
+ module.exports= {
+  addFacture, deleteFacture, updateFacture, getFactureByid,getAllFactures
+ }
