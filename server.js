@@ -3,8 +3,7 @@ const { success, error } = require("consola");
 const cors = require("cors");
 
 const app = express();
-// working in karim branch 
-// using json format
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
