@@ -16,7 +16,7 @@ const PORT = process.env.APP_PORT || 4000;
 
 const DOMAIN = process.env.APP_DOMAIN;
 
-app.listen(PORT, async () => {
+app.listen(PORT, async () => { 
   try {
     success({
       message: `server started on port ${PORT} ` + `URL ${DOMAIN}`,
