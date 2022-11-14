@@ -1,9 +1,15 @@
 const mongoose = require('mongoose')
 const schemaPlace = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
-  }
+  },
+  lodges: [
 
+    {
+      type: mongoose.Types.ObjectId, //type du module mongoose
+      ref: "Lodge",
+    },
+  ]
 
 })
 module.exports = mongoose.model('Place', schemaPlace)

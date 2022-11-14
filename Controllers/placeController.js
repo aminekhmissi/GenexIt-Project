@@ -3,7 +3,7 @@ const Place = require('../Models/place')
 
 addPlace = async (req, res) => {
   const place = new Place(req.body)
-  await lodge.save()
+  await place.save()
   res.status(200).json({
     data: place, msg: 'place created successfully'
   })
@@ -21,7 +21,10 @@ getPlceById = async (req, res) => {
   })
 }
 updatePlace = async (req, res) => {
-  const UpdatedPlace = await Place.findByIdAndUpdate({ _id: req.parmas.id }, req.body)
+  const UpdatedPlace = await Place.findByIdAndUpdate({ _id: req.params.id }, req.body)
+  res.status(200).json({
+    msg: 'place updated'
+  })
 
 }
 deletePlace = async (req, res) => {

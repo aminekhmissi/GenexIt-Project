@@ -1,10 +1,10 @@
 const mongoose = require("mongoose")
-const shemaFacture = new mongoose.Schema({
+const schemaFacture = new mongoose.Schema({
   ref: {
     type: String
   },
   discount: {
-    type: Strings
-  }
+    type: String  }
 }, { timestamps: true }
 )
+module.exports = mongoose.model('Facture', schemaFacture)

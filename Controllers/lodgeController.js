@@ -1,8 +1,12 @@
 const Lodge = require('../Models/lodge')
+const Place = require('../Models/place')
 
 addLodge = async (req, res) => {
   const lodge = new Lodge(req.body)
   await lodge.save()
+  await Place.findByIdAndUpdate({
+    _id: req.body.place
+  }, { $push: { lodges: lodge } })
   res.status(200).json({
     data: lodge,
     msg: 'lodge created successfully'
@@ -20,10 +24,14 @@ getLodgeById = async (req, res) => {
   res.status(200).json({ data: lodge, msg: 'lodge by ID' })
 }
 updateLodge = async (req, res) => {
-  const lodge = Lodge.findByIdAndUpdate({ _id: req.params.id }, req.body)
+  const lodge = await Lodge.findByIdAndUpdate({ _id: req.params.id }, req.body)
+  res.status(200).json({ msg: 'lodge updated' })
 }
 deleteLodge = async (req, res) => {
-  const deletedLodge = await Lodge.findByIdAndDelete({ _id: req.params.id })
+  const deletedLodge = await Lodge.findOneAndRemove({ _id: req.params.id })
+  res.status(200).json({
+    msg: 'deleted successfully '
+  })
 }
 module.exports = {
   addLodge, getAllLodges, getLodgeById, deleteLodge, updateLodge

@@ -3,7 +3,11 @@ const { success, error } = require("consola");
 const cors = require("cors");
 
 const app = express();
-
+const categoryRouter = require('./Routers/categoryRouter')
+const placeRouter = require('./Routers/placeRouter')
+const factureRouter = require('./Routers/factureRouter')
+const lodgeRouter = require('./Routers/lodgeRouter')
+const equipmentRouter = require('./Routers/equipmentsRouter')
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -15,12 +19,12 @@ const PORT = process.env.APP_PORT || 4000;
 const DOMAIN = process.env.APP_DOMAIN;
 
 const authRoute = require("./Routers/authenticationRoute");
-const userRoute=require('./Routers/userRoute')
-const reservationRoute=require('./Routers/reservationRoute')
+const userRoute = require('./Routers/userRoute')
+const reservationRoute = require('./Routers/reservationRoute')
 
 app.use("/", authRoute);
-app.use('/User',userRoute)
-app.use('/Reservation',reservationRoute)
+app.use('/User', userRoute)
+app.use('/Reservation', reservationRoute)
 
 app.listen(PORT, async () => {
   try {
