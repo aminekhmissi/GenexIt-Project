@@ -4,7 +4,7 @@ const uploadPicture = require("../Middlewares/uploadPicture");
 
 const passport = require("passport");
 require("../Middlewares/passport_auth").passport;
-
+//
 route.post("/registerAdmin", authController.registerAdmin);
 route.post(
   "/registerCustomer",
