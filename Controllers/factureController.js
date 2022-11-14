@@ -2,9 +2,18 @@ const Facture = require('../Models/facture')
 
 
 addFacture = async (req, res) => {
-  const facture = new Facture(req.body)
-  await facture.save
-  res.status(200).json({ data: facture, msg: 'facture created ' })
+  try {
+    const facture = new Facture(req.body)
+    await facture.save()
+    res.status(200).json({ data: facture, msg: 'facture created ' })
+
+
+  } catch (error) {
+    res.status(404).json({
+      message: 'failed to create a facture ' + error.message
+    })
+
+  }
 }
 getAllFactures = async (req, res) => {
   const facture = await Facture.find({})
@@ -27,8 +36,11 @@ updateFacture = async (req, res) => {
 }
 deleteFacture = async (req, res) => {
   const deletedFacture = await Facture.findByIdAndRemove({ _id: req.params.id })
+  res.status(200).json({
+    msg: 'deleted successfully '
+  })
 }
 
- module.exports= {
-  addFacture, deleteFacture, updateFacture, getFactureByid,getAllFactures
- }
+module.exports = {
+  addFacture, deleteFacture, updateFacture, getFactureByid, getAllFactures
+}
