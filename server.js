@@ -14,8 +14,15 @@ require("dotenv").config();
 const DB = require("./Config/db");
 
 const PORT = process.env.APP_PORT || 4000;
-
 const DOMAIN = process.env.APP_DOMAIN;
+
+const authRoute = require("./Routers/authenticationRoute");
+const userRoute=require('./Routers/userRoute')
+const reservationRoute=require('./Routers/reservationRoute')
+
+app.use("/", authRoute);
+app.use('/User',userRoute)
+app.use('/Reservation',reservationRoute)
 
 app.listen(PORT, async () => {
   try {
