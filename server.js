@@ -26,6 +26,14 @@ app.use("/", authRoute);
 app.use('/User', userRoute)
 app.use('/Reservation', reservationRoute)
 
+app.use('/category', categoryRouter)
+app.use('/place', placeRouter)
+app.use('/facture', factureRouter)
+app.use('/lodge', lodgeRouter)
+app.use('/eq', equipmentRouter)
+
+
+
 app.listen(PORT, async () => {
   try {
     success({
