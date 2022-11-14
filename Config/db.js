@@ -14,7 +14,7 @@ const connectToDB = async () => {
     });
   } catch (err) {
     error({
-      message: `connection failed : ${err.message}`,
+      message: `connection failed: ${err.message}`,
       badge: true,
     });
     connectToDB();
