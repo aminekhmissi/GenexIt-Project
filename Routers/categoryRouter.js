@@ -6,4 +6,5 @@ router.get('/categoryById/:id', categoryController.getCategoryByid)
 router.delete('/deleteCategory/:id', categoryController.deleteCategory)
 router.put('/updateCategory/:id', categoryController.updateCategory)
 
-module.exports = router
+module.exports = router 
+// 
