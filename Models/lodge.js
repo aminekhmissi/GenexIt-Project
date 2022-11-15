@@ -54,9 +54,33 @@ const schemaLodge = new mongoose.Schema({
     ref: 'Equipments',
     required: false
   }],
+  comments: [{
+    type: mongoose.Types.ObjectId,
+    ref: 'Commentaire',
+    required: false
+  }],
   photos: {
     type: String
+  },
+  reservation: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Reservation',
+    required: false
+  },
+  owner: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Owner',
+    required: false
+  },
+  dateDebut: {
+    type: Date,
+    required: false
+  },
+  datefin: {
+    type: Date,
+    required: false
   }
 
-}, { timestamps: true })
+}
+  , { timestamps: true })
 module.exports = mongoose.model('Lodge', schemaLodge)
