@@ -15,7 +15,7 @@ const commentSchema = new mongoose.Schema({
     lodge:{
         type:mongoose.Types.ObjectId,
         ref:'Lodge',
-        required:true
+        required:false
     }
 },{timestamps:true});
 

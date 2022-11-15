@@ -11,6 +11,10 @@ var ownerSchema = new mongoose.Schema({
         required:false,
         unique:true,
     },
+    address:{
+        type:String,
+        required:true
+    },
     //relation
     lodges:[{
         type:mongoose.Types.ObjectId,
