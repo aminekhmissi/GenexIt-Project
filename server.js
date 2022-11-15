@@ -21,10 +21,12 @@ const DOMAIN = process.env.APP_DOMAIN;
 const authRoute = require("./Routers/authenticationRoute");
 const userRoute = require('./Routers/userRoute')
 const reservationRoute = require('./Routers/reservationRoute')
+const commentRoute=require('./Routers/commentaireRoute')
 
 app.use("/", authRoute);
 app.use('/User', userRoute)
 app.use('/Reservation', reservationRoute)
+app.use('/Commentaire',commentRoute)
 
 app.use('/category', categoryRouter)
 app.use('/place', placeRouter)

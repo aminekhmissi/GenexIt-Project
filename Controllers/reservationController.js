@@ -517,7 +517,12 @@ module.exports = {
   },
   async getReservationById(req, res) {
     try {
-      const reservation = await Reservation.findById({ _id: req.params.id });
+      const reservation = await Reservation.findById({ _id: req.params.id })
+      .populate("customer")
+      .populate({path:'lodge',populate:{path:"place"}})
+      .populate({path:'lodge',populate:{path:"category"}})
+      .populate({path:'lodge',populate:{path:"equipments"}})
+
       res.status(200).json({
         status: 200,
         message: "Reservation by Id:",
@@ -548,6 +553,18 @@ module.exports = {
   },
   async updateReservation(req, res) {
     try {
-    } catch (error) {}
+      await Reservation.findByIdAndUpdate({_id:req.params.id},req.body)
+      res.status(200).json({
+        status:200,
+        message:"reservation updated!",
+        data:await Reservation.findById({_id:req.params.id})
+      })
+    } catch (error) {
+      res.status(404).json({
+        status:404,
+        message:"failed to update reservation",
+        error:error.message
+      })
+    }
   },
 };

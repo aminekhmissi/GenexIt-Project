@@ -11,11 +11,20 @@ var customerSchema = new mongoose.Schema({
         required:true,
         unique:true,
     },
+    address:{
+       type:String,
+       required:true
+    },
     city:{
         type:String,
         required:true,
     },
-    //relation:
+    listFavoris:[{
+        type:mongoose.Types.ObjectId,
+        ref:"Lodge",
+        required:false
+    }],
+     //relation:
     commentaires:[{
         type:mongoose.Types.ObjectId,
         ref:'Commentaire',
