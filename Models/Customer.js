@@ -1,15 +1,15 @@
 const mongoose = require('mongoose'); // Erase if already required
-const User=require('./User')
+const User = require('./User')
 // Declare the Schema of the Mongo model
 var customerSchema = new mongoose.Schema({
-    picture:{
-        type:String,
-        required:false,
+    picture: {
+        type: String,
+        required: false,
     },
-    cin:{
-        type:String,
-        required:true,
-        unique:true,
+    cin: {
+        type: String,
+        required: true,
+        unique: true,
     },
     address:{
        type:String,
@@ -30,12 +30,12 @@ var customerSchema = new mongoose.Schema({
         ref:'Commentaire',
         required:false
     }],
-    reservations:[{
-        type:mongoose.Types.ObjectId,
-        ref:'Reservation',
-        required:false
+    reservations: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Reservation',
+        required: false
     }]
-},{timestamps:true});
+}, { timestamps: true });
 
 //Export the model
-module.exports = User.discriminator('Customer', customerSchema);
+module.exports = User.discriminator('Customer', customerSchema) 

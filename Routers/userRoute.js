@@ -7,4 +7,4 @@ route.put('/addLodgeToFavoris',userController.addLodgeToFavoris)
 route.put('/removeLodgeFromFavoris',userController.removeLodgeFromFavoris)
 route.delete('/deleteUser/:id',userController.deleteUser)
 
-module.exports=route
+module.exports=route 

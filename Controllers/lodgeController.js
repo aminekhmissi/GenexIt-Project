@@ -1,5 +1,6 @@
 const Lodge = require('../Models/lodge')
 const Place = require('../Models/place')
+const Owner = require('../Models/Owner')
 
 addLodge = async (req, res) => {
 
@@ -17,6 +18,9 @@ addLodge = async (req, res) => {
     await lodge.save()
     await Place.findByIdAndUpdate({
       _id: req.body.place
+    }, { $push: { lodges: lodge } })
+    await Owner.findByIdAndUpdate({
+      _id: req.body.owner
     }, { $push: { lodges: lodge } })
     res.status(200).json({
       data: lodge,
@@ -48,6 +52,9 @@ deleteLodge = async (req, res) => {
   await Lodge.findByIdAndUpdate(Lodge.place, {
     $pull: { lodges: req.params.id },
   });
+  await Lodge.findByIdAndUpdate(Lodge.owner, {
+    $pull: { lodges: req.params.id }
+  })
   const deletedLodge = await Lodge.findOneAndRemove({ _id: req.params.id })
   res.status(200).json({
     msg: 'deleted successfully '
