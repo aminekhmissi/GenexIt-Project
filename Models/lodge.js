@@ -1,4 +1,16 @@
 const mongoose = require('mongoose')
+
+const GallerySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: false,
+  },
+});
+
 const schemaLodge = new mongoose.Schema({
   date: {
     type: Date,
@@ -12,13 +24,14 @@ const schemaLodge = new mongoose.Schema({
     type: String,
     required: true
   },
+  galleries: [GallerySchema],
   nbPerson: {
     type: Number,
     required: false
   },
   price: {
     type: Number,
-    required: true
+    required: false
 
   },
   rooms: {
@@ -40,7 +53,10 @@ const schemaLodge = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: 'Equipments',
     required: false
-  }]
+  }],
+  photos: {
+    type: String
+  }
 
 }, { timestamps: true })
 module.exports = mongoose.model('Lodge', schemaLodge)
