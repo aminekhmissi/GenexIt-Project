@@ -1,5 +1,6 @@
 const Reservation = require("../Models/Reservation");
 const Customer = require("../Models/Customer");
+const Lodge = require("../Models/lodge");
 
 const nodemailer = require("nodemailer");
 const { randomBytes } = require("crypto");
@@ -19,30 +20,30 @@ module.exports = {
   async createReservation(req, res) {
     try {
       const newReservation = new Reservation(req.body);
-      newReservation.confirmationCode = randomBytes(6).toString("hex");
-      //calculate number of days between checkIn , checkOut attributes:
-      const nightsNumber = newReservation.checkOut.getTime() - newReservation.checkIn.getTime();
-        newReservation.nights=nightsNumber / 1000 / 60 / 60 / 24
-      await newReservation.save();
-      //relation:
-      await Customer.findByIdAndUpdate(
-        { _id: req.body.customer },
-        { $push: { reservations: newReservation } }
-      );
-
-      res.status(200).json({
-        status: 200,
-        nights:newReservation.nights,
-        message: "reservation created successfully!! ,check your email !",
-      });
-      //send an email for confirmation
-      const customer = await Customer.findById({ _id: req.body.customer });
-      await transport.sendMail(
-        {
-          to: customer.email,
-          subject: "your reservation confirm email",
-          text: "welcome " + customer.fullname,
-          html: `
+      const lodge = await Lodge.findById({ _id: req.body.lodge });
+      if (
+        // compare between reservation date and lodge available date
+        lodge.dateDebut.getTime() <= newReservation.checkIn.getTime() &&
+        newReservation.checkIn.getTime() < lodge.datefin.getTime() &&
+        lodge.dateDebut.getTime() < newReservation.checkOut.getTime() &&
+        newReservation.checkOut.getTime() <= lodge.datefin.getTime()
+      ) {
+        var msg = "reservation created successfully!! ,check your email !";
+        newReservation.confirmationCode = randomBytes(6).toString("hex");
+        await newReservation.save();
+        //relation:
+        await Customer.findByIdAndUpdate(
+          { _id: req.body.customer },
+          { $push: { reservations: newReservation } }
+        );
+        //send an email for confirmation
+        const customer = await Customer.findById({ _id: req.body.customer });
+        await transport.sendMail(
+          {
+            to: customer.email,
+            subject: "your reservation confirm email",
+            text: "welcome " + customer.fullname,
+            html: `
          <!DOCTYPE html>
          <html>
            <head>
@@ -239,7 +240,7 @@ module.exports = {
                              line-height: 48px;
                            "
                          >
-                           Confirm Your Email Address
+                           Confirm Your Reservation
                          </h1>
                        </td>
                      </tr>
@@ -281,8 +282,8 @@ module.exports = {
                          "
                        >
                          <p style="margin: 0">
-                           Tap the button below to confirm your email address. If you
-                           didn't create an account with
+                           Tap the button below to confirm your reservation. If you
+                           didn't create a reservation with
                            <a href="https://blogdesire.com">Paste</a>, you can safely
                            delete this email.
                          </p>
@@ -316,7 +317,7 @@ module.exports = {
                                          text-decoration: none;
                                          border-radius: 6px;
                                        "
-                                       >Do Something Sweet</a
+                                       >Confirm Your Reservation</a
                                      >
                                    </td>
                                  </tr>
@@ -462,15 +463,23 @@ module.exports = {
          
                            
                          `,
-        },
-        (err, sent) => {
-          if (err) {
-            console.log(err.message + ": not sent");
-          } else {
-            console.log("email sent ");
+          },
+          (err, sent) => {
+            if (err) {
+              console.log(err.message + ": not sent");
+            } else {
+              console.log("email sent ");
+            }
           }
-        }
-      );
+        );
+      } else {
+        msg = "should reserve into available date";
+      }
+      res.status(200).json({
+        status: 200,
+        message: "" + msg,
+        data: newReservation,
+      });
     } catch (error) {
       res.status(404).json({
         status: 404,
@@ -488,6 +497,10 @@ module.exports = {
       reservation.confirmed = true;
       reservation.confirmationCode = undefined;
       reservation.save();
+      //lodge reserving:
+      await Lodge.findByIdAndUpdate(reservation.lodge, {
+        reservation: reservation._id,
+      });
       res.sendFile(join(__dirname, "../Templates/success.html"));
     } catch (error) {
       res.sendFile(join(__dirname, "../Templates/error.html"));
@@ -518,10 +531,10 @@ module.exports = {
   async getReservationById(req, res) {
     try {
       const reservation = await Reservation.findById({ _id: req.params.id })
-      .populate("customer")
-      .populate({path:'lodge',populate:{path:"place"}})
-      .populate({path:'lodge',populate:{path:"category"}})
-      .populate({path:'lodge',populate:{path:"equipments"}})
+        .populate("customer")
+        .populate({ path: "lodge", populate: { path: "place" } })
+        .populate({ path: "lodge", populate: { path: "category" } })
+        .populate({ path: "lodge", populate: { path: "equipments" } });
 
       res.status(200).json({
         status: 200,
@@ -553,18 +566,41 @@ module.exports = {
   },
   async updateReservation(req, res) {
     try {
-      await Reservation.findByIdAndUpdate({_id:req.params.id},req.body)
+      await Reservation.findByIdAndUpdate({ _id: req.params.id }, req.body);
       res.status(200).json({
-        status:200,
-        message:"reservation updated!",
-        data:await Reservation.findById({_id:req.params.id})
-      })
+        status: 200,
+        message: "reservation updated!",
+        data: await Reservation.findById({ _id: req.params.id }),
+      });
     } catch (error) {
       res.status(404).json({
-        status:404,
-        message:"failed to update reservation",
-        error:error.message
-      })
+        status: 404,
+        message: "failed to update reservation",
+        error: error.message,
+      });
+    }
+  },
+  async countReservation(req, res) {
+    try {
+      const countAllReservation = await Reservation.countDocuments({});
+      const countConfirmedReservation = await Reservation.countDocuments({
+        confirmed: true,
+      });
+      const countNotConfirmedReservation = await Reservation.countDocuments({
+        confirmed: false,
+      });
+      res.status(200).json({
+        status: 200,
+        allreservations: countAllReservation,
+        confirmedReservation: countConfirmedReservation,
+        NotconfirmedRservation: countNotConfirmedReservation,
+      });
+    } catch (error) {
+      res.status(404).json({
+        status: 404,
+        message: "failed to count reservations",
+        error: error.message,
+      });
     }
   },
 };

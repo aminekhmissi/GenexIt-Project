@@ -4,7 +4,10 @@ const mongoose = require('mongoose'); // Erase if already required
 var reservationSchema = new mongoose.Schema({
     nights:{
         type:Number,
-        default:"0",
+        default:function(){
+            const nightsNumber= this.checkOut.getTime()-this.checkIn.getTime()
+            return nightsNumber / 1000 / 60 / 60 /24
+        },
         required:false,
     },
     totalPrice:{

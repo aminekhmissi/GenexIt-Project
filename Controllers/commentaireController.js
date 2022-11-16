@@ -1,5 +1,6 @@
 const Commentaire = require("../Models/Commentaire");
 const Customer=require('../Models/Customer')
+const Lodge=require('../Models/lodge')
 module.exports = {
   async createCommentaire(req, res) {
     try {
@@ -8,6 +9,8 @@ module.exports = {
       //relation:
       await Customer.findByIdAndUpdate({_id:req.body.customer},
         {$push:{commentaires:newComment}})
+        await Lodge.findByIdAndUpdate({_id:req.body.lodge},
+          {$push:{comments:newComment}})
       res.status(200).json({
         status: 200,
         message: "comment created successfully!!",
@@ -35,4 +38,25 @@ module.exports = {
       });
     }
   },
+  async deleteCommentaire(req,res){
+    try {
+      const comment =await Commentaire.findById({_id:req.params.id})
+      //relation:
+      const customer=await Customer.findOneAndUpdate(comment.customer,{$pull:{commentaires:req.params.id}})
+      const lodge=await Lodge.findOneAndUpdate(comment.lodge,{$pull:{comments:req.params.id}})
+    
+      await Commentaire.findByIdAndRemove({_id:req.params.id})
+      res.status(200).json({
+        status:200,
+        message:"comment deleted successfully"
+      })
+    } catch (error) {
+      res.status(404).json({
+        status:404,
+        message:"failed to delete a comment",
+        error:error.message
+      })
+    }
+  }
+  
 };
