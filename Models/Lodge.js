@@ -20,10 +20,7 @@ const schemaLodge = new mongoose.Schema({
     type: String,
     required: false
   },
-  adress: {
-    type: String,
-    required: true
-  },
+
   galleries: [GallerySchema],
   nbPerson: {
     type: Number,
@@ -60,8 +57,10 @@ const schemaLodge = new mongoose.Schema({
     required: false
   }],
   photos: {
-    type: String
+    type: [String]
   },
+
+
   reservation: {
     type: mongoose.Types.ObjectId,
     ref: 'Reservation',
@@ -72,6 +71,16 @@ const schemaLodge = new mongoose.Schema({
     ref: 'Owner',
     required: false
   },
+  feature: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Feature',
+    required: false
+  },
+  adress: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Adress',
+    required: false
+  },
   dateDebut: {
     type: Date,
     required: false
@@ -79,6 +88,11 @@ const schemaLodge = new mongoose.Schema({
   datefin: {
     type: Date,
     required: false
+  },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5
   }
 
 }
