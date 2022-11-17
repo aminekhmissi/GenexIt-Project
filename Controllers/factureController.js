@@ -1,4 +1,4 @@
-const Facture = require('../Models/facture')
+const Facture = require('../Models/Facture')
 
 
 addFacture = async (req, res) => {

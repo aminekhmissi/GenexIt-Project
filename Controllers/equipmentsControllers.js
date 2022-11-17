@@ -1,4 +1,4 @@
-const Eq = require('../Models/equipments')
+const Eq = require('../Models/Equipments')
 
 addEquipments = async (req, res) => {
   const equipment = new Eq(req.body)

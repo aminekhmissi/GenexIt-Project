@@ -11,7 +11,7 @@ const adresssSchema = new mongoose.Schema({
   lodge: {
     type: mongoose.Types.ObjectId,
     ref: 'Lodge',
-    required: false
+    required: true
   },
   postalCode: {
     type: Number,

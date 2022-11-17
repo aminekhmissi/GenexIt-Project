@@ -1,6 +1,6 @@
 const Reservation = require("../Models/Reservation");
 const Customer = require("../Models/Customer");
-const Lodge = require("../Models/lodge");
+const Lodge = require("../Models/Lodge");
 
 const nodemailer = require("nodemailer");
 const { randomBytes } = require("crypto");

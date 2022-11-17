@@ -1,5 +1,5 @@
-const lodge = require('../Models/lodge')
-const Place = require('../Models/place')
+const lodge = require('../Models/Lodge')
+const Place = require('../Models/Place')
 
 addPlace = async (req, res) => {
   const place = new Place(req.body)
