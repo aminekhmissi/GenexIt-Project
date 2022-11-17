@@ -103,3 +103,4 @@ const schemaLodge = new mongoose.Schema({
 }
   , { timestamps: true })
 module.exports = mongoose.model('Lodge', schemaLodge)
+//
