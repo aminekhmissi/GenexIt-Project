@@ -11,31 +11,32 @@ var customerSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    address:{
-       type:String,
-       required:true
+    address: {
+        type: String,
+        required: true
     },
-    city:{
-        type:String,
-        required:true,
+    city: {
+        type: String,
+        required: true,
     },
-    listFavoris:[{
-        type:mongoose.Types.ObjectId,
-        ref:"Lodge",
-        required:false
+    listFavoris: [{
+        type: mongoose.Types.ObjectId,
+        ref: "Lodge",
+        required: false
     }],
-     //relation:
-    commentaires:[{
-        type:mongoose.Types.ObjectId,
-        ref:'Commentaire',
-        required:false
+    //relation:
+    commentaires: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Commentaire',
+        required: false
     }],
     reservations: [{
         type: mongoose.Types.ObjectId,
         ref: 'Reservation',
         required: false
     }]
+
 }, { timestamps: true });
 
 //Export the model
-module.exports = User.discriminator('Customer', customerSchema) 
+module.exports = User.discriminator('Customer', customerSchema)
