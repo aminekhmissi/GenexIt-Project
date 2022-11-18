@@ -41,7 +41,7 @@ getAllLodges = async (req, res) => {
 }
 getLodgeById = async (req, res) => {
 
-  const lodge = await Lodge.findById({ _id: req.params.id })
+  const lodge = await Lodge.findById({ _id: req.params.id }).populate('place').populate('owner').populate('adress')
   res.status(200).json({ data: lodge, msg: 'lodge by ID' })
 }
 updateLodge = async (req, res) => {
@@ -61,26 +61,19 @@ deleteLodge = async (req, res) => {
   })
 }
 
+
+// find each person with a name contains 'Ghost'
 searchLodge = async (req, res) => {
   try {
-    const lodge = await Lodge.find(
-      {
-        "$or": [
-          { "title": { $regex: req.params.key } },
-          // "reference":{$reference:req.params.key}
-        ]
-      }
-    )
-    res.status(200).json({
-      data: lodge
-    })
-  } catch (error) {
-    res.status(404).json({
-      msg: "product not found",
-      error: error.message
-    })
+    const found = await Lodge.findOne({ "title": { $regex: /[a-z]/, $options: 'i' } })
+    res.status(200).json({ data: found, msg: 'found' })
   }
-};
+  catch (error) {
+    res.status(404).json({ msg: 'error failed to get' })
+
+  }
+
+}
 
 
 module.exports = {

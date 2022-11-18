@@ -15,7 +15,7 @@ getAllPlaces = async (req, res) => {
   })
 }
 getPlceById = async (req, res) => {
-  const place = await Place.findById({ _id: req.params.id })
+  const place = await Place.findById({ _id: req.params.id }).populate('lodges')
   res.status(200).json({
     data: place, msg: 'place by id'
   })
