@@ -35,7 +35,7 @@ var reservationSchema = new mongoose.Schema({
     customer:{
      type:mongoose.Types.ObjectId,
      ref:'Customer',
-     required:true
+     required:false
     },
     facture:{
      type:mongoose.Types.ObjectId,

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { checkout } = require('../Routers/adressRouter');
+
 const GallerySchema = new mongoose.Schema({
   name: {
     type: String,
@@ -10,16 +10,7 @@ const GallerySchema = new mongoose.Schema({
     required: false,
   },
 });
-const reservedSchema = new mongoose.Schema({
-  checkedIn: {
-    type: Date,
-    required: true
-  },
-  checkedOut: {
-    type: Date,
-    required: true,
-  }
-})
+
 
 const schemaLodge = new mongoose.Schema({
   date: {
@@ -39,7 +30,6 @@ const schemaLodge = new mongoose.Schema({
   price: {
     type: Number,
     required: false
-
   },
   rooms: {
     type: Number,
@@ -66,16 +56,12 @@ const schemaLodge = new mongoose.Schema({
     ref: 'Commentaire',
     required: false
   }],
-  photos: {
-    type: [String]
-  },
 
-
-  reservation: {
+  reservations: [{
     type: mongoose.Types.ObjectId,
     ref: 'Reservation',
     required: false
-  },
+  }],
   owner: {
     type: mongoose.Types.ObjectId,
     ref: 'Owner',
@@ -99,7 +85,6 @@ const schemaLodge = new mongoose.Schema({
     type: Date,
     required: false
   },
-  reserved: [reservedSchema]
 }
   , { timestamps: true })
 module.exports = mongoose.model('Lodge', schemaLodge)

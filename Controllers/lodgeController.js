@@ -34,7 +34,7 @@ addLodge = async (req, res) => {
   }
 }
 getAllLodges = async (req, res) => {
-  const allLodges = await Lodge.find({})
+  var allLodges = await Lodge.find({})
   res.status(200).json({
     msg: 'all lodges', data: allLodges
   })
@@ -60,6 +60,29 @@ deleteLodge = async (req, res) => {
     msg: 'deleted successfully '
   })
 }
+
+searchLodge = async (req, res) => {
+  try {
+    const lodge = await Lodge.find(
+      {
+        "$or": [
+          { "title": { $regex: req.params.key } },
+          // "reference":{$reference:req.params.key}
+        ]
+      }
+    )
+    res.status(200).json({
+      data: lodge
+    })
+  } catch (error) {
+    res.status(404).json({
+      msg: "product not found",
+      error: error.message
+    })
+  }
+};
+
+
 module.exports = {
-  addLodge, getAllLodges, getLodgeById, deleteLodge, updateLodge
-}
+  addLodge, getAllLodges, getLodgeById, deleteLodge, updateLodge, searchLodge
+} 
