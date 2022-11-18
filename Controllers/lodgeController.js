@@ -1,5 +1,5 @@
-const Lodge = require('../Models/lodge')
-const Place = require('../Models/place')
+const Lodge = require('../Models/Lodge')
+const Place = require('../Models/Place')
 const Owner = require('../Models/Owner')
 
 addLodge = async (req, res) => {
@@ -34,14 +34,14 @@ addLodge = async (req, res) => {
   }
 }
 getAllLodges = async (req, res) => {
-  const allLodges = await Lodge.find({})
+  var allLodges = await Lodge.find({})
   res.status(200).json({
     msg: 'all lodges', data: allLodges
   })
 }
 getLodgeById = async (req, res) => {
 
-  const lodge = await Lodge.findById({ _id: req.params.id })
+  const lodge = await Lodge.findById({ _id: req.params.id }).populate('place').populate('owner').populate('adress').populate('equipments')
   res.status(200).json({ data: lodge, msg: 'lodge by ID' })
 }
 updateLodge = async (req, res) => {
@@ -49,17 +49,32 @@ updateLodge = async (req, res) => {
   res.status(200).json({ msg: 'lodge updated' })
 }
 deleteLodge = async (req, res) => {
-  await Lodge.findByIdAndUpdate(Lodge.place, {
-    $pull: { lodges: req.params.id },
-  });
-  await Lodge.findByIdAndUpdate(Lodge.owner, {
-    $pull: { lodges: req.params.id }
-  })
+  const lodge = await Lodge.findById({ _id: req.params.id })
+
+  const owner = await Owner.findByIdAndUpdate(lodge.owner, { $pull: { lodges: req.params.id } })
+  const place = await Place.findByIdAndUpdate(lodge.place, { $pull: { lodges: req.params.id } })
+
   const deletedLodge = await Lodge.findOneAndRemove({ _id: req.params.id })
   res.status(200).json({
     msg: 'deleted successfully '
   })
 }
-module.exports = {
-  addLodge, getAllLodges, getLodgeById, deleteLodge, updateLodge
+
+
+searchLodge = async (req, res,) => {
+  try {
+    const found = await Lodge.find({
+      "$or": [{ title: { $regex: req.params.key } }]
+    })
+
+    res.status(200).json({ data: found })
+  }
+  catch (error) {
+    res.status(404).json({ msg: 'error failed to get' + error.message })
+  }
 }
+
+
+module.exports = {
+  addLodge, getAllLodges, getLodgeById, deleteLodge, updateLodge, searchLodge
+} 

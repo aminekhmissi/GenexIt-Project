@@ -1,5 +1,5 @@
-const lodge = require('../Models/lodge')
-const Place = require('../Models/place')
+const lodge = require('../Models/Lodge')
+const Place = require('../Models/Place')
 
 addPlace = async (req, res) => {
   const place = new Place(req.body)
@@ -15,7 +15,7 @@ getAllPlaces = async (req, res) => {
   })
 }
 getPlceById = async (req, res) => {
-  const place = await Place.findById({ _id: req.params.id })
+  const place = await Place.findById({ _id: req.params.id }).populate('lodges')
   res.status(200).json({
     data: place, msg: 'place by id'
   })
