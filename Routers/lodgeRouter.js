@@ -7,5 +7,5 @@ router.get('/lodges', lodgeController.getAllLodges)
 router.get('/getById/:id', lodgeController.getLodgeById)
 router.put('/updateByid/:id', lodgeController.updateLodge)
 router.delete('/delete/:id', lodgeController.deleteLodge),
-  router.get('/search', lodgeController.searchLodge)
+  router.get('/search/:key', lodgeController.searchLodge)
 module.exports = router

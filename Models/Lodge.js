@@ -79,7 +79,7 @@ const schemaLodge = new mongoose.Schema({
   },
   dateDebut: {
     type: Date,
-    required: false
+    required: true
   },
   datefin: {
     type: Date,

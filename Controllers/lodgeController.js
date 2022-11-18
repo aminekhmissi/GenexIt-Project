@@ -41,7 +41,7 @@ getAllLodges = async (req, res) => {
 }
 getLodgeById = async (req, res) => {
 
-  const lodge = await Lodge.findById({ _id: req.params.id }).populate('place').populate('owner').populate('adress')
+  const lodge = await Lodge.findById({ _id: req.params.id }).populate('place').populate('owner').populate('adress').populate('equipments')
   res.status(200).json({ data: lodge, msg: 'lodge by ID' })
 }
 updateLodge = async (req, res) => {
@@ -49,12 +49,11 @@ updateLodge = async (req, res) => {
   res.status(200).json({ msg: 'lodge updated' })
 }
 deleteLodge = async (req, res) => {
-  await Lodge.findByIdAndUpdate(Lodge.place, {
-    $pull: { lodges: req.params.id },
-  });
-  await Lodge.findByIdAndUpdate(Lodge.owner, {
-    $pull: { lodges: req.params.id }
-  })
+  const lodge = await Lodge.findById({ _id: req.params.id })
+
+  const owner = await Owner.findByIdAndUpdate(lodge.owner, { $pull: { lodges: req.params.id } })
+  const place = await Place.findByIdAndUpdate(lodge.place, { $pull: { lodges: req.params.id } })
+
   const deletedLodge = await Lodge.findOneAndRemove({ _id: req.params.id })
   res.status(200).json({
     msg: 'deleted successfully '
@@ -62,17 +61,17 @@ deleteLodge = async (req, res) => {
 }
 
 
-// find each person with a name contains 'Ghost'
-searchLodge = async (req, res) => {
+searchLodge = async (req, res,) => {
   try {
-    const found = await Lodge.findOne({ "title": { $regex: /[a-z]/, $options: 'i' } })
-    res.status(200).json({ data: found, msg: 'found' })
+    const found = await Lodge.find({
+      "$or": [{ title: { $regex: req.params.key } }]
+    })
+
+    res.status(200).json({ data: found })
   }
   catch (error) {
-    res.status(404).json({ msg: 'error failed to get' })
-
+    res.status(404).json({ msg: 'error failed to get' + error.message })
   }
-
 }
 
 
