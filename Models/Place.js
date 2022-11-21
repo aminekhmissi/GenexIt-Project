@@ -13,3 +13,4 @@ const schemaPlace = new mongoose.Schema({
 
 })
 module.exports = mongoose.model('Place', schemaPlace)
+// this is a tested text 

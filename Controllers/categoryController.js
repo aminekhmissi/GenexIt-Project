@@ -1,5 +1,5 @@
 
-const Category = require('../Models/category')
+const Category = require('../Models/Category')
 
 
 addCategory = async (req, res) => {

@@ -10,44 +10,44 @@ var reservationSchema = new mongoose.Schema({
         },
         required:false,
     },
-    totalPrice:{
-        type:Number,
-        required:true,
+    totalPrice: {
+        type: Number,
+        required: false,
     },
-    checkIn:{
-        type:Date,
-        required:true,
+    checkIn: {
+        type: Date,
+        required: true,
     },
-    checkOut:{
-        type:Date,
-        required:true,
+    checkOut: {
+        type: Date,
+        required: true,
     },
-    confirmed:{
-     type:Boolean,
-     default:false,
-     required:false
+    confirmed: {
+        type: Boolean,
+        default: false,
+        required: false
     },
-    confirmationCode:{
-        type:String,
-        required:false,
+    confirmationCode: {
+        type: String,
+        required: false,
     },
     //relation:
-    customer:{
-     type:mongoose.Types.ObjectId,
-     ref:'Customer',
-     required:true
+    customer: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Customer',
+        required: false
     },
-    facture:{
-     type:mongoose.Types.ObjectId,
-     ref:'Facture',
-     required:false
+    facture: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Facture',
+        required: false
     },
-    lodge:{
-        type:mongoose.Types.ObjectId,
-        ref:'Lodge',
-        required:false
+    lodge: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Lodge',
+        required: false
     }
-},{timestamps:true});
+}, { timestamps: true });
 
 //Export the model
 module.exports = mongoose.model('Reservation', reservationSchema);

@@ -18,11 +18,10 @@ var transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
   port: 2525,
   auth: {
-    user: "d9ca72c3cda801",
-    pass: "5990b50fd44d7f",
+    user: "9ec22d03b8111d",
+    pass: "7baa16f1c1b103"
   },
 });
-
 var tokenList = {};
 module.exports = {
   async registerAdmin(req, res) {

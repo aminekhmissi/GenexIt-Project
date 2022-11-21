@@ -1,20 +1,20 @@
 const Reservation = require("../Models/Reservation");
 const Customer = require("../Models/Customer");
 const Owner = require("../Models/Owner");
-const Lodge = require("../Models/lodge");
+const Lodge = require("../Models/Lodge");
 
 const nodemailer = require("nodemailer");
 const { randomBytes } = require("crypto");
 const { join } = require("path");
-const moment = require("moment");
+const moment=require('moment')
 
 DOMAIN = process.env.APP_DOMAIN;
 var transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
   port: 2525,
   auth: {
-    user: "d9ca72c3cda801",
-    pass: "5990b50fd44d7f",
+    user: "9ec22d03b8111d",
+    pass: "7baa16f1c1b103",
   },
 });
 
@@ -985,7 +985,6 @@ module.exports = {
         .populate({ path: "lodge", populate: { path: "place" } })
         .populate({ path: "lodge", populate: { path: "category" } })
         .populate({ path: "lodge", populate: { path: "equipments" } });
-
       res.status(200).json({
         status: 200,
         message: "Reservation by Id:",
@@ -1021,6 +1020,31 @@ module.exports = {
         status: 200,
         message: "reservation updated!",
         data: await Reservation.findById({ _id: req.params.id }),
+      });
+    } catch (error) {
+      res.status(404).json({
+        status: 404,
+        message: "failed to update reservation",
+        error: error.message,
+      });
+    }
+  },
+  async countReservation(req, res) {
+    try {
+      const countAllReservation = await Reservation.countDocuments({});
+      const countConfirmedReservation = await Reservation.countDocuments({
+        confirmed: true,
+      });
+      const countNotConfirmedReservation = await Reservation.countDocuments({
+        confirmed: false,
+      });
+      const date = req.body.date;
+      res.status(200).json({
+        status: 200,
+        moment_test: moment.isDate(moment()),
+        allreservations: countAllReservation,
+        confirmedReservation: countConfirmedReservation,
+        NotconfirmedRservation: countNotConfirmedReservation,
       });
     } catch (error) {
       res.status(404).json({

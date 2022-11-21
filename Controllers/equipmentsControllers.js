@@ -1,4 +1,5 @@
-const Eq = require('../Models/equipments')
+const Eq = require('../Models/Equipments')
+const Lodge = require('../Models/Lodge')
 
 addEquipments = async (req, res) => {
   const equipment = new Eq(req.body)
@@ -6,6 +7,8 @@ addEquipments = async (req, res) => {
   res.status(200).json({
     msg: 'added', data: equipment
   })
+  await Lodge.findByIdAndUpdate({ _id: req.body.lodge },
+    { $push: { equipments: equipment } })
 }
 getAllEquipments = async (req, res) => {
   try {
@@ -22,10 +25,9 @@ getAllEquipments = async (req, res) => {
   }
 }
 getEquipmentById = async (req, res) => {
-  const equipment = await Eq.findById({ _id: req.params.id })
+  const equipment = await Eq.findById({ _id: req.params.id }).populate('lodge')
   res.status(200).json({ data: equipment, msg: 'Equipment by id' })
 }
-
 updateEquipment = async (req, res) => {
 
   try {
@@ -43,6 +45,9 @@ updateEquipment = async (req, res) => {
 
 deleteEquipment = async (req, res) => {
   try {
+    const equipment = await Eq.findById({ _id: req.params.id })
+
+    const lodge = await Lodge.findByIdAndUpdate(equipment.lodge, { $pull: { equipments: req.params.id } })
     const deletedEquipment = Eq.findByIdAndDelete({ _id: req.params.id })
     res.status(200).json({
       msg: 'deleted succesfully'
