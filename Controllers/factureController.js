@@ -1,5 +1,15 @@
 const Facture = require('../Models/Facture')
-
+const Lodge = require('../Models/Lodge')
+const Reservation = require('../Models/Reservation')
+countFacture = async (req, res) => {
+  const nights = req.body.nights
+  const price = req.body.price
+  const sum = await nights * price
+  res.status(200).json({
+    data: sum, msg: 'price of nights '
+  })
+  res.status(404).json({ msg: 'failed ' })
+}
 
 addFacture = async (req, res) => {
   try {
@@ -42,5 +52,5 @@ deleteFacture = async (req, res) => {
 }
 
 module.exports = {
-  addFacture, deleteFacture, updateFacture, getFactureByid, getAllFactures
+  addFacture, deleteFacture, updateFacture, getFactureByid, getAllFactures, countFacture
 }

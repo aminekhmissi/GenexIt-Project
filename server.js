@@ -2,15 +2,18 @@ const express = require("express");
 const { success, error } = require("consola");
 const cors = require("cors");
 
+
 const app = express();
 const categoryRouter = require('./Routers/categoryRouter')
 const placeRouter = require('./Routers/placeRouter')
 const factureRouter = require('./Routers/factureRouter')
 const lodgeRouter = require('./Routers/lodgeRouter')
 const equipmentRouter = require('./Routers/equipmentsRouter')
+const featureRouter = require('./Routers/featureRouter')
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 
 require("dotenv").config();
 const DB = require("./Config/db");
@@ -35,6 +38,8 @@ app.use('/facture', factureRouter)
 app.use('/lodge', lodgeRouter)
 app.use('/eq', equipmentRouter)
 app.use('/adress', adressRouter)
+app.use('/feature', featureRouter)
+
 
 //display picture
 app.get('/getfile/:image',function(req,res){

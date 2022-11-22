@@ -11,11 +11,19 @@ const adresssSchema = new mongoose.Schema({
   lodge: {
     type: mongoose.Types.ObjectId,
     ref: 'Lodge',
-    required: true
+    required: false
   },
   postalCode: {
     type: Number,
     required: true,
+  },
+  lang: {
+    type: String,
+    required: false
+  },
+  at: {
+    type: String,
+    required: false
   }
 
 })

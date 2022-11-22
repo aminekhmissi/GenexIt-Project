@@ -1,7 +1,6 @@
 const Customer = require("../Models/Customer");
 const User = require("../Models/User");
 const Owner = require("../Models/Owner");
-
 const bcrypt = require("bcrypt");
 const { randomBytes } = require("crypto");
 const { join } = require("path");
@@ -20,6 +19,7 @@ var transport = nodemailer.createTransport({
   },
 });
 var tokenList = {};
+
 module.exports = {
   async registerAdmin(req, res) {
     try {
@@ -44,7 +44,9 @@ module.exports = {
       });
     }
   },
+
   async registerCustomer(req, res) {
+    var { errors, isValid } = validateUser(req.body)
     try {
       req.body["photo"] = req.file.filename;
       const password = bcrypt.hashSync(req.body.password, 10); //cryptage 10 fois
@@ -54,16 +56,19 @@ module.exports = {
         role: "Customer",
         verificationCode: randomBytes(6).toString("hex"), // 6 bits hexadecimal
       });
-      await newCustomer.save();
-      res.status(200).json({
-        message: "Customer created !! check your email to be verified!!",
-      });
-      await transport.sendMail(
-        {
-          to: newCustomer.email, //receivers
-          subject: "welcome :" + newCustomer.fullname,
-          text: "bonjour !",
-          html: `
+      if (!isValid) {
+        res.status(404).json(errors)
+      } else {
+        await newCustomer.save();
+        res.status(200).json({
+          message: "Customer created !! check your email to be verified!!",
+        });
+        await transport.sendMail(
+          {
+            to: newCustomer.email, //receivers
+            subject: "welcome :" + newCustomer.fullname,
+            text: "bonjour !",
+            html: `
                       <!DOCTYPE html>
                           <html lang="en">
                           <head>
@@ -171,15 +176,16 @@ module.exports = {
                              </table>
                           </body>
                           </html>`,
-        },
-        (err, sent) => {
-          if (err) {
-            console.log(err.message + " not sent ");
-          } else {
-            console.log("email sent");
+          },
+          (err, sent) => {
+            if (err) {
+              console.log(err.message + " not sent ");
+            } else {
+              console.log("email sent");
+            }
           }
-        }
-      );
+        )
+      };
     } catch (error) {
       res.status(404).json({
         msg: "failed to create a customer !!",

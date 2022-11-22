@@ -31,7 +31,6 @@ var reservationSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    //relation:
     customer: {
         type: mongoose.Types.ObjectId,
         ref: 'Customer',

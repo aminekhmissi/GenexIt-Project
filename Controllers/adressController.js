@@ -16,10 +16,16 @@ addAdress = async (req, res) => {
     })
 
   }
-  
 
+}
+getadressByid = async (req, res) => {
+  const adress = await Adress.findById({ _id: req.params.id })
+  res.status(200).json({
+    data: adress,
+    msg: 'all adresses'
+  })
 
 }
 module.exports = {
-  addAdress
+  addAdress, getadressByid
 }
