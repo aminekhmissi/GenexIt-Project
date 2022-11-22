@@ -1,9 +1,6 @@
-const Admin = require("../Models/Admin");
 const Customer = require("../Models/Customer");
 const User = require("../Models/User");
 const Owner = require("../Models/Owner");
-const Commentaire = require("../Models/Commentaire");
-const Reservation = require("../Models/Reservation");
 
 const bcrypt = require("bcrypt");
 const { randomBytes } = require("crypto");
@@ -18,8 +15,8 @@ var transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
   port: 2525,
   auth: {
-    user: "9ec22d03b8111d",
-    pass: "7baa16f1c1b103"
+    user: "d9ca72c3cda801",
+    pass: "5990b50fd44d7f",
   },
 });
 var tokenList = {};
@@ -27,17 +24,17 @@ module.exports = {
   async registerAdmin(req, res) {
     try {
       const password = bcrypt.hashSync(req.body.password, 10);
-      const newAdmin = new Admin({
+      const admin = new User({
         ...req.body,
         password,
         role: "Admin",
         verified: true,
       });
-      await newAdmin.save();
+      await admin.save();
       res.status(200).json({
         status: 200,
         message: "Admin created !",
-        data: newAdmin,
+        data: admin,
       });
     } catch (error) {
       res.status(404).json({

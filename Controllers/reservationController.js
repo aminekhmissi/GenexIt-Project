@@ -6,15 +6,15 @@ const Lodge = require("../Models/Lodge");
 const nodemailer = require("nodemailer");
 const { randomBytes } = require("crypto");
 const { join } = require("path");
-const moment=require('moment')
+const moment = require("moment");
 
 DOMAIN = process.env.APP_DOMAIN;
 var transport = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
   port: 2525,
   auth: {
-    user: "9ec22d03b8111d",
-    pass: "7baa16f1c1b103",
+    user: "d9ca72c3cda801",
+    pass: "5990b50fd44d7f",
   },
 });
 
@@ -30,22 +30,32 @@ module.exports = {
         moment(newReservation.checkIn).isBefore(newReservation.checkOut)
       ) {
         //check lodge reservations:
-        const ListReservations = lodge.reservations;
         var ExistedReservation = false;
-        ListReservations.forEach((element) => {
-          const reserved = Reservation.findById(element);
+        lodge.reservedList.forEach((element) => {
           if (
-            !(
-              (moment(newReservation.checkIn).isAfter(reserved.checkOut) &&
-                moment(newReservation.checkOut).isAfter(reserved.checkOut)) ||
-              (moment(newReservation.checkIn).isBefore(reserved.checkIn) &&
-                moment(newReservation.checkOut).isBefore(reserved.checkIn))
+            moment(newReservation.checkIn).isBetween(
+              element.checkedIn,
+              element.checkedOut
+            ) ||
+            moment(newReservation.checkOut).isBetween(
+              element.checkedIn,
+              element.checkedOut
+            ) ||
+            moment(newReservation.checkOut).isSame(element.checkedOut) ||
+            moment(newReservation.checkIn).isSame(element.checkedIn) ||
+            moment(element.checkedIn).isBetween(
+              newReservation.checkIn,
+              newReservation.checkOut
+            ) ||
+            moment(element.checkedOut).isBetween(
+              newReservation.checkIn,
+              newReservation.checkOut
             )
           ) {
             ExistedReservation = true;
           }
         });
-        if (!ExistedReservation) {
+        if (ExistedReservation === false) {
           var msg = "reservation created successfully!! ,check your email !";
           newReservation.confirmationCode = randomBytes(6).toString("hex");
           await newReservation.save();
@@ -56,7 +66,22 @@ module.exports = {
           );
           await Lodge.findByIdAndUpdate(
             { _id: req.body.lodge },
-            { $push: { reservations: newReservation } }
+            {
+              $push: {
+                reservations: newReservation,
+              },
+            }
+          );
+          await Lodge.findByIdAndUpdate(
+            { _id: req.body.lodge },
+            {
+              $push: {
+                reservedList: {
+                  checkedIn: newReservation.checkIn,
+                  checkedOut: newReservation.checkOut,
+                },
+              },
+            }
           );
           //send an email for confirmation
           const customer = await Customer.findById({ _id: req.body.customer });
@@ -1020,31 +1045,6 @@ module.exports = {
         status: 200,
         message: "reservation updated!",
         data: await Reservation.findById({ _id: req.params.id }),
-      });
-    } catch (error) {
-      res.status(404).json({
-        status: 404,
-        message: "failed to update reservation",
-        error: error.message,
-      });
-    }
-  },
-  async countReservation(req, res) {
-    try {
-      const countAllReservation = await Reservation.countDocuments({});
-      const countConfirmedReservation = await Reservation.countDocuments({
-        confirmed: true,
-      });
-      const countNotConfirmedReservation = await Reservation.countDocuments({
-        confirmed: false,
-      });
-      const date = req.body.date;
-      res.status(200).json({
-        status: 200,
-        moment_test: moment.isDate(moment()),
-        allreservations: countAllReservation,
-        confirmedReservation: countConfirmedReservation,
-        NotconfirmedRservation: countNotConfirmedReservation,
       });
     } catch (error) {
       res.status(404).json({

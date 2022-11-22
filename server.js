@@ -36,7 +36,11 @@ app.use('/lodge', lodgeRouter)
 app.use('/eq', equipmentRouter)
 app.use('/adress', adressRouter)
 
-
+//display picture
+app.get('/getfile/:image',function(req,res){
+  res.sendFile(__dirname+'/Storages/'+req.params.image)
+  //req.params.image:input picture name+extension(png,jpeg...) from Storages
+})
 
 app.listen(PORT, async () => {
   try {

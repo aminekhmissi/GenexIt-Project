@@ -1,10 +1,25 @@
-const route =require('express').Router()
-const userController=require('../Controllers/userController')
+const route = require("express").Router();
+const userController = require("../Controllers/userController");
 
-route.get('/getCustomerById/:id',userController.getCustomerById)
-route.get('/getOwnerById/:id',userController.getOwnerById)
-route.put('/addLodgeToFavoris',userController.addLodgeToFavoris)
-route.put('/removeLodgeFromFavoris',userController.removeLodgeFromFavoris)
-route.delete('/deleteUser/:id',userController.deleteUser)
+const passport = require("passport");
+require("../Middlewares/passport_auth").passport;
 
-module.exports=route 
+route.get("/getCustomerById/:id", userController.getCustomerById);
+route.get("/getOwnerById/:id", userController.getOwnerById);
+route.put(
+  "/addLodgeToFavoris",
+  passport.authenticate("jwt", { session: false }),
+  userController.addLodgeToFavoris
+);
+route.put(
+  "/removeLodgeFromFavoris",
+  passport.authenticate("jwt", { session: false }),
+  userController.removeLodgeFromFavoris
+);
+route.delete(
+  "/deleteUser/:id",
+  passport.authenticate("jwt", { session: false }),
+  userController.deleteUser
+);
+
+module.exports = route;
