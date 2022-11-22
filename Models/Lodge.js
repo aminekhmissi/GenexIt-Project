@@ -10,6 +10,16 @@ const GallerySchema = new mongoose.Schema({
     required: false,
   },
 });
+const reservationSchema = new mongoose.Schema({
+  checkedIn: {
+    type: Date,
+    required: false,
+  },
+  checkedOut: {
+    type: Date,
+    required: false,
+  },
+});
 
 
 const schemaLodge = new mongoose.Schema({
@@ -27,6 +37,7 @@ const schemaLodge = new mongoose.Schema({
     type: Number,
     required: false
   },
+  reservedList: [reservationSchema],
   price: {
     type: Number,
     required: false

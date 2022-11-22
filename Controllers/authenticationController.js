@@ -6,7 +6,7 @@ const { randomBytes } = require("crypto");
 const { join } = require("path");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-
+const validateUser = require('../validation/usersValidation')
 const DOMAIN = process.env.APP_DOMAIN;
 const SECRET = process.env.APP_SECRET;
 
