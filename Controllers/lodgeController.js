@@ -34,14 +34,14 @@ addLodge = async (req, res) => {
   }
 }
 getAllLodges = async (req, res) => {
-  var allLodges = await Lodge.find({})
+  var allLodges = await Lodge.find({}).populate('place').populate('owner').populate('adress').populate('equipments').populate('feature')
   res.status(200).json({
     msg: 'all lodges', data: allLodges
   })
 }
 getLodgeById = async (req, res) => {
 
-  const lodge = await Lodge.findById({ _id: req.params.id }).populate('place').populate('owner').populate('adress').populate('equipments')
+  const lodge = await Lodge.findById({ _id: req.params.id }).populate('place').populate('feature').populate('owner').populate('adress').populate('equipments')
   res.status(200).json({ data: lodge, msg: 'lodge by ID' })
 }
 updateLodge = async (req, res) => {
@@ -72,7 +72,7 @@ searchLodge = async (req, res,) => {
   }
 }
 confirmLodge = async (req, res) => {
-  const lodge =  await Lodge.findById({ _id: req.params.id })
+  const lodge = await Lodge.findById({ _id: req.params.id })
   lodge.confirmed = true
   await lodge.save()
   res.status(200).json({ data: lodge, msg: 'lodge is confirmed successfully!' })
