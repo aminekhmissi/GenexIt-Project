@@ -71,8 +71,15 @@ searchLodge = async (req, res,) => {
     res.status(404).json({ msg: 'error failed to get' + error.message })
   }
 }
+confirmLodge = async (req, res) => {
+  const lodge =  await Lodge.findById({ _id: req.params.id })
+  lodge.confirmed = true
+  await lodge.save()
+  res.status(200).json({ data: lodge, msg: 'lodge is confirmed successfully!' })
+  res.status(404).json({ msg: 'something went wrong !!' })
+}
 
 
 module.exports = {
-  addLodge, getAllLodges, getLodgeById, deleteLodge, updateLodge, searchLodge
+  addLodge, getAllLodges, getLodgeById, deleteLodge, updateLodge, searchLodge, confirmLodge
 } 

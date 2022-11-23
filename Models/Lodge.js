@@ -96,6 +96,10 @@ const schemaLodge = new mongoose.Schema({
     type: Date,
     required: false
   },
+  confirmed: {
+    type: Boolean,
+    default: false
+  }
 }
   , { timestamps: true })
 module.exports = mongoose.model('Lodge', schemaLodge)
