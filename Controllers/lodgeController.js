@@ -49,11 +49,9 @@ updateLodge = async (req, res) => {
   res.status(200).json({ msg: 'lodge updated' })
 }
 deleteLodge = async (req, res) => {
-  const lodge = await Lodge.findById({ _id: req.params.id })
-
-  const owner = await Owner.findByIdAndUpdate(lodge.owner, { $pull: { lodges: req.params.id } })
-  const place = await Place.findByIdAndUpdate(lodge.place, { $pull: { lodges: req.params.id } })
-
+  await Lodge.findByIdAndUpdate(Lodge.place, {
+    $pull: { lodges: req.params.id },
+  });
   const deletedLodge = await Lodge.findOneAndRemove({ _id: req.params.id })
   res.status(200).json({
     msg: 'deleted successfully '

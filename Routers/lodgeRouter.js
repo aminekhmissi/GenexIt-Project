@@ -3,6 +3,8 @@ const passport = require('passport')
 
 require("../Middlewares/passport_auth").passport
 const file = require('../Middlewares/uploadPicture')
+
+const file = require('../Middlewares/uploadPicture')
 const lodgeController = require('../Controllers/lodgeController')
 router.post('/addLodge', file.array('photos'), lodgeController.addLodge)
 router.get('/lodges',/*passport.authenticate("jwt", { session: false }), */lodgeController.getAllLodges)
