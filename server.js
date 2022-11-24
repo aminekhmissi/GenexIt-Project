@@ -57,3 +57,7 @@ app.listen(PORT, async () => {
     error({ message: "error with server " + err.message, badge: true });
   }
 });
+ function func(a,b){
+return a+b
+
+}
