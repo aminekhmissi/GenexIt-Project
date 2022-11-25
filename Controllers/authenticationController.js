@@ -1,16 +1,12 @@
-const Admin = require("../Models/Admin");
 const Customer = require("../Models/Customer");
 const User = require("../Models/User");
 const Owner = require("../Models/Owner");
-const Commentaire = require("../Models/Commentaire");
-const Reservation = require("../Models/Reservation");
-
 const bcrypt = require("bcrypt");
 const { randomBytes } = require("crypto");
 const { join } = require("path");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-
+const validateUser = require('../validation/usersValidation')
 const DOMAIN = process.env.APP_DOMAIN;
 const SECRET = process.env.APP_SECRET;
 
@@ -22,23 +18,23 @@ var transport = nodemailer.createTransport({
     pass: "5990b50fd44d7f",
   },
 });
-
 var tokenList = {};
+
 module.exports = {
   async registerAdmin(req, res) {
     try {
       const password = bcrypt.hashSync(req.body.password, 10);
-      const newAdmin = new Admin({
+      const admin = new User({
         ...req.body,
         password,
         role: "Admin",
         verified: true,
       });
-      await newAdmin.save();
+      await admin.save();
       res.status(200).json({
         status: 200,
         message: "Admin created !",
-        data: newAdmin,
+        data: admin,
       });
     } catch (error) {
       res.status(404).json({
@@ -48,7 +44,9 @@ module.exports = {
       });
     }
   },
+
   async registerCustomer(req, res) {
+    var { errors, isValid } = validateUser(req.body)
     try {
       req.body["photo"] = req.file.filename;
       const password = bcrypt.hashSync(req.body.password, 10); //cryptage 10 fois
@@ -58,16 +56,19 @@ module.exports = {
         role: "Customer",
         verificationCode: randomBytes(6).toString("hex"), // 6 bits hexadecimal
       });
-      await newCustomer.save();
-      res.status(200).json({
-        message: "Customer created !! check your email to be verified!!",
-      });
-      await transport.sendMail(
-        {
-          to: newCustomer.email, //receivers
-          subject: "welcome :" + newCustomer.fullname,
-          text: "bonjour !",
-          html: `
+      if (!isValid) {
+        res.status(404).json(errors)
+      } else {
+        await newCustomer.save();
+        res.status(200).json({
+          message: "Customer created !! check your email to be verified!!",
+        });
+        await transport.sendMail(
+          {
+            to: newCustomer.email, //receivers
+            subject: "welcome :" + newCustomer.fullname,
+            text: "bonjour !",
+            html: `
                       <!DOCTYPE html>
                           <html lang="en">
                           <head>
@@ -175,15 +176,16 @@ module.exports = {
                              </table>
                           </body>
                           </html>`,
-        },
-        (err, sent) => {
-          if (err) {
-            console.log(err.message + " not sent ");
-          } else {
-            console.log("email sent");
+          },
+          (err, sent) => {
+            if (err) {
+              console.log(err.message + " not sent ");
+            } else {
+              console.log("email sent");
+            }
           }
-        }
-      );
+        )
+      };
     } catch (error) {
       res.status(404).json({
         msg: "failed to create a customer !!",
